@@ -27,8 +27,6 @@ jobs:
         image:
           - name: mlflow
             context: images/production/mlflow
-          - name: training
-            context: images/production/training
 
     steps:
       - name: Check out repository
