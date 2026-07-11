@@ -6,14 +6,34 @@ module "platform" {
   zone       = var.zone     
 }
 
-module "mlflow" {
-  source = "../modules/mlflow"
+data "google_client_config" "current" {}
 
-  project_id = var.project_id
-  region     = var.region
-  zone       = var.zone     
+module "github" {
+   source = "../modules/github_ci"
 
-  artifact_bucket_name = "mlflow-bucket"
-  namespace            = "mlflow"
+   project_id        = var.project_id
+   github_owner      = var.github_owner
+   github_repository = var.github_repository
 
+   repository_id = module.platform.artifact_registry_repository_id
+   repository_location = module.platform.artifact_registry_location
+
+   depends_on = [module.platform]
 }
+
+module "mlflow" {
+   source = "../modules/mlflow"
+
+   providers = {
+     kubernetes = kubernetes
+   }
+
+
+   project_id = var.project_id
+   region     = var.region
+   zone       = var.zone     
+
+   artifact_bucket_name = var.mlflow_artifact_bucket_name
+   namespace            = "mlflow"
+}
+

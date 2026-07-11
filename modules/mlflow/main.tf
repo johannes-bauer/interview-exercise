@@ -84,6 +84,8 @@ resource "kubernetes_persistent_volume_claim_v1" "mlflow_data" {
     namespace = kubernetes_namespace_v1.mlflow.metadata[0].name
   }
 
+  wait_until_bound = false
+
   spec {
     access_modes = ["ReadWriteOnce"]
 
@@ -134,7 +136,8 @@ resource "kubernetes_deployment_v1" "mlflow" {
 
         container {
           name  = local.app_name
-          image = var.mlflow_image
+          image = "${var.region}-docker.pkg.dev/${var.project_id}/ml-training-images/mlflow:latest"
+          image_pull_policy = "Always"
 
           command = ["mlflow"]
 
