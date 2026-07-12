@@ -28,6 +28,9 @@
 # For this exercise, I'll make as few changes as possible to get to a
 # working deployment and point out the issues that would need to be
 # addressed together with the original author of the script.
+#
+# To be clear: I would NOT deploy this code in production as it is,
+# because it is unsafe.
 
 
 import os
@@ -157,7 +160,7 @@ def score(model_name: str, model_alias: str, data_dir: pathlib.Path):
     # Note JB: There's something seriously broken if the scoring data set lacks columns that
     # are in the training data set.
     # 
-    # Adding missing columns and inserting zeros is probably not a good strategy.  As assertion 
+    # Adding missing columns and inserting zeros is probably not a good strategy.  An assertion 
     # that specifically tests that all required input columns are present (and optionally: that
     # dtypes, ranges etc are as expected) will surface unexpected changes.
     #
