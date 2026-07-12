@@ -14,8 +14,13 @@ variable "zone" {
 }
 
 variable "mlflow_artifact_bucket_name" {
-  description = "GitHub repository name, without the owner."
+  description = "The name of the bucket to write MLFlow artifacts to."
   type        = string
+}
+
+variable "training_scoring_data_bucket_name" {
+  description = "The name of the bucket from which training and scoring data are loaded, and to which predictions are written."
+  type	      = string
 }
 
 variable "github_owner" {
@@ -27,4 +32,3 @@ variable "github_repository" {
   description = "GitHub repository name, without the owner."
   type        = string
 }
-

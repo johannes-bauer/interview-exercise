@@ -37,3 +37,19 @@ module "mlflow" {
    namespace            = "mlflow"
 }
 
+module "training_scoring" {
+   source = "../modules/training"
+
+   providers = {
+     kubernetes = kubernetes
+   }
+
+
+   project_id = var.project_id
+   region     = var.region
+   zone       = var.zone     
+
+   mlflow_artifact_bucket_name = var.mlflow_artifact_bucket_name
+   data_bucket_name = var.training_scoring_data_bucket_name
+
+}
