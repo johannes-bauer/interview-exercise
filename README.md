@@ -145,4 +145,5 @@ The scoring job loads the `champion` model from MLflow, scores `scoring_data.csv
 
 ## Notes on the training script
 
-`train_and_score.py` was provided by the data scientist and modified minimally to make it deployable. Inline comments in the script flag several issues that should be addressed collaboratively before production use — notably: evaluation on training data only (no held-out set), one-hot encoding consistency between train and score, and an ID column that should be excluded from features.
+`train_and_score.py` was provided by the data scientist and modified minimally to make it deployable. 
+Inline comments in the script flag several issues that should be addressed collaboratively before production use — notably: evaluation on training data only (no held-out set), one-hot encoding consistency between train and score, and an ID column that should be excluded from features.

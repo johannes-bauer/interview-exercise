@@ -48,3 +48,20 @@
 ## Why?
 
  * Too much TF wiring for this exercise; a production setup would use Cloud SQL.
+
+
+# Training, Scoring outside of Terraform, k8s templates.
+
+## Why?
+
+ * Jobs are ephemeral, not infrastructure
+ * Depending on the kinds of trigger (new code, new data, cron) something outside of TF should create Jobs.
+
+
+# Dev tooling (gcloud, kubectl, terraform) runs in a container.
+
+## Why?
+
+ * Reproducible environment: everyone gets the same tool versions without local installs.
+ * Nothing leaks to the host; gcloud credentials, kube config, and the Terraform plugin
+   cache are bind-mounted from `.tooling/` and stay in the project directory.
