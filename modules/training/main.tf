@@ -48,6 +48,9 @@ resource "google_storage_bucket_iam_member" "data_access" {
   member = "serviceAccount:${google_service_account.model_workload.email}"
 }
 
+# The MLflow server runs with --no-serve-artifacts, so the training job writes
+# artifacts (models, plots) directly to GCS rather than through the server.
+# This binding gives the training workload the access it needs to do so.
 resource "google_storage_bucket_iam_member" "mlflow_artifact_access" {
   bucket = var.mlflow_artifact_bucket_name
   role   = "roles/storage.objectAdmin"

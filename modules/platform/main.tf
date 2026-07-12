@@ -11,6 +11,9 @@ resource "google_project_service" "services" {
   project = var.project_id
   service = each.key
 
+  # false: don't disable the API when this resource is destroyed.
+  # Disabling e.g. the container or IAM API would affect the whole project,
+  # not just resources managed by this Terraform configuration.
   disable_on_destroy = false
 }
 

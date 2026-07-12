@@ -16,6 +16,8 @@ spec:
         app.kubernetes.io/component: training
 
       annotations:
+        # Required to activate the GCS FUSE CSI driver for this pod.
+        # Without this annotation the CSI volume below is silently ignored.
         gke-gcsfuse/volumes: "true"
 
     spec:
