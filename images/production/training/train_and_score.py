@@ -33,6 +33,7 @@
 import os
 import argparse
 import pathlib
+import time
 import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
 from xgboost import XGBRFClassifier
@@ -117,15 +118,22 @@ def train(registered_model_name: str, data_dir: pathlib.Path):
 def promote_model(model_name:str, run_id: str, alias:str):
     client = mlflow.MlflowClient()
 
-    latest, = client.search_model_versions(
-        f"name='{model_name}' AND run_id='{run_id}'"
-    )
+    models = []
+    for _ in range(5):
+        models = client.search_model_versions(
+            f"name='{model_name}' AND run_id='{run_id}'"
+        )
 
-    client.set_registered_model_alias(
-        name=model_name,
-        alias=alias,
-        version=latest.version,
-    )
+        if models:
+            latest, = models
+            client.set_registered_model_alias(
+                name=model_name,
+                alias=alias,
+                version=latest.version,
+            )
+            return
+        else:
+            time.sleep(2)
 
 
 def score(model_name: str, model_alias: str, data_dir: pathlib.Path):
