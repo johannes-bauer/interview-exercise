@@ -1,0 +1,62 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ${JOB_NAME}
+  namespace: training
+  labels:
+    app.kubernetes.io/name: churn-model
+    app.kubernetes.io/component: scoring
+spec:
+  backoffLimit: 1
+
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: churn-model
+        app.kubernetes.io/component: scoring
+
+      annotations:
+        gke-gcsfuse/volumes: "true"
+
+    spec:
+      serviceAccountName: model-workload
+      restartPolicy: Never
+
+      containers:
+        - name: scoring
+          image: ${GKE_REGION}-docker.pkg.dev/${GKE_PROJECT}/ml-training-images/trainandscore:latest
+          imagePullPolicy: Always
+
+          command:
+            - python
+            - /train_and_score.py
+
+          args:
+            - score
+            - churn-prediction
+            - /data
+
+          env:
+            - name: MLFLOW_TRACKING_URI
+              value: http://mlflow.mlflow.svc.cluster.local:5000
+
+          resources:
+            requests:
+              cpu: "500m"
+              memory: 1Gi
+            limits:
+              cpu: "1"
+              memory: 2Gi
+
+          volumeMounts:
+            - name: data
+              mountPath: /data
+
+      volumes:
+        - name: data
+          csi:
+            driver: gcsfuse.csi.storage.gke.io
+            readOnly: false
+
+            volumeAttributes:
+              bucketName: ${DATA_BUCKET_NAME}
