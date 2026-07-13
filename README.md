@@ -68,16 +68,29 @@ k8s/
                   # and writes terraform/terraform.tfvars and k8s/.env
 ```
 
-**2. Apply infrastructure**
+**2. Apply platform infrastructure**
+
+> **Bootstrapping limitation:** a plain `terraform apply` will hang on the MLflow
+> deployment because Terraform waits for the pod to become ready, the pod needs the
+> MLflow image, and the image doesn't exist until GitHub Actions has run — which in
+> turn requires the Artifact Registry and Workload Identity that Terraform is creating.
+> Break the cycle by applying in two steps:
 
 ```bash
 terraform init
+terraform apply -target=module.platform -target=module.github
+```
+
+Then complete steps 3 and 4 below, wait for the CI build to finish, and run:
+
+```bash
 terraform apply
 ```
 
-Terraform will create the GKE cluster, GCS buckets, Artifact Registry repository, MLflow deployment, and Workload Identity configuration for GitHub Actions.
+This second apply deploys the MLflow server and training infrastructure, by which
+point the images are available.
 
-**4. Configure GitHub Actions**
+**3. Configure GitHub Actions**
 
 After `terraform apply`, note the two outputs:
 
